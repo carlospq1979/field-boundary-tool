@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Delineate Your Field </title>
+    <title>Delineate Your Field</title>
     <style>
       body {
         font-family: sans-serif;
@@ -16,7 +16,9 @@
         padding: 20px;
         background: #f7f7f7;
       }
-      input, textarea, button {
+      input,
+      textarea,
+      button {
         width: 100%;
         margin: 8px 0;
         padding: 10px;
@@ -31,10 +33,12 @@
     </style>
   </head>
   <body>
-    <h2 style="text-align:center;"> Navigate to your field and click on the corners to delineate a polygon </h2>
-    <h2 style="text-align:center;"> Change to Satellite view (upper left of the map) if needed </h2>
-    <h2 style="text-align:center;"> Complete the form below and submit </h2>
+    <h2 style="text-align:center;">Navigate to your field and click on the corners to delineate a polygon</h2>
+    <h2 style="text-align:center;">Change to Satellite view (upper left of the map) if needed</h2>
+    <h2 style="text-align:center;">Complete the form below and submit</h2>
+
     <div id="map"></div>
+
     <form id="boundaryForm" action="https://formspree.io/f/xblpvkba" method="POST">
       <input type="text" name="name" placeholder="Your Name" required />
       <input type="email" name="email" placeholder="Your Email" required />
@@ -44,6 +48,7 @@
     </form>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUeWkGBzc_1rN8JvTJYzOgLsI00SVx8o4&libraries=drawing"></script>
+
     <script>
       let map, drawingManager, selectedShape;
 
@@ -73,10 +78,19 @@
             .getPath()
             .getArray()
             .map(p => ({ lat: p.lat(), lng: p.lng() }));
+
+          // Save coordinates in the form (for Formspree)
           document.getElementById("coordinates").value = JSON.stringify(path);
+
+          // ✅ Send data to the parent Wix page
+          window.parent.postMessage(
+            { type: "submitPolygon", data: JSON.stringify(path) },
+            "*"
+          );
         });
       }
 
+      // Initialize map
       window.onload = initMap;
     </script>
   </body>
